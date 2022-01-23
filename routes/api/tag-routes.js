@@ -6,11 +6,11 @@ const { increment } = require('../../models/Product');
 
 router.get('/', (req, res) => {
   Tag.findAll({
-    attributes: ['tag_name'],
+    attributes: ['id', 'tag_name'],
     include: [
       {
         model: Product,
-        attributes: ['product_name', 'price']
+        attributes: ['product_name']
       }
     ]
   })
@@ -26,13 +26,15 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   Tag.findOne({
     where: {
-      id: req.params.ids
+      id: req.params.id
     },
     attributes: ['tag_name'],
     include: [
       {
         model: Product,
-        attributes: ['product_name', 'price']
+        through: {
+          attributes: ['product_name', 'price']
+        }
       }
     ]
   })
@@ -57,7 +59,7 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-  Tag.update(req.body,
+  Tag.update(
     {
       tag_name: req.body.tag_name
     },
